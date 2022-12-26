@@ -31,27 +31,36 @@ Geolocation API is used to collect and keep in database list of geographical coo
 ## Usage
 
 1. Authentication
-Application uses 2 types of authentication.
-    -endpoint '/login' : request method: POST, using basic auth to authorize and get JWT. Sending basic auth base64 encoded header with credentials (for purpose of this demo app hardcoded with inMemoryUserDetailsManager as 'user/password').
-    -endpoint '/geolocations' using JWT authentication. Every call needs authorization header with bearer token provided in '/login' endpoint. Token is valid for 1 hour.
+   Application uses 2 types of authentication.
+   -endpoint '/login' : request method: POST, using basic auth to authorize and get JWT. Sending basic auth base64
+   encoded header with credentials (for purpose of this demo app hardcoded with inMemoryUserDetailsManager as '
+   user/password').
+   -endpoint '/geolocations' using JWT authentication. Every call needs authorization header with bearer token provided
+   in '/login' endpoint. Token is valid for 1 hour.
 
-2. Adding new geolocation data.
-    resources:
-  '/geolocations' : request method: POST, data type: JSON, authorization header with bearer token required
+2. Adding new geolocation data.\
+   resources:\
+   '/geolocations' : request method: POST, data type: JSON, authorization header with bearer token required
+
+```
 Data format:
 deviceId: long,
 longitute: double (values between -90 and 90),
 latitude: double (values between -180 and 180),
 created: LocalDateTime (OPTIONAL)
-    e.g.
-    ```
+ ```
+
+e.g.
+
+```
     {
         "deviceId": 8,
         "latitude": -90,
         "longitude": -180,
         "created": "2022-12-20T20:04:34.245587266"
     }
-    ```
+```
+
 Newly created object will be returned as response.
 
 ## Additional informations
