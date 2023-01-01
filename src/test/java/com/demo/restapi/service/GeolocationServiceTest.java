@@ -1,6 +1,6 @@
 package com.demo.restapi.service;
 
-import com.demo.restapi.controller.dto.GeolocationRequestDto;
+import com.demo.restapi.controller.dto.GeolocationRequest;
 import com.demo.restapi.model.Geolocation;
 import com.demo.restapi.repository.GeolocationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ class GeolocationServiceTest {
         Geolocation expectedGeolocation = new Geolocation();
         when(geolocationRepository.save(any(Geolocation.class))).thenReturn(expectedGeolocation);
         //when
-        Geolocation newGeolocation = geolocationService.addGeolocation(new GeolocationRequestDto());
+        Geolocation newGeolocation = geolocationService.addGeolocation(new GeolocationRequest());
         //then
         assertThat(newGeolocation).isEqualTo(expectedGeolocation);
 

@@ -8,6 +8,17 @@ group = 'com.demo'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+compileJava {
+
+	options.compilerArgs << '-parameters'
+}
+
 repositories {
 	mavenCentral()
 }
@@ -22,7 +33,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
+	annotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
