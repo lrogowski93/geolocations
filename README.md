@@ -13,6 +13,7 @@ Geolocation API is used to collect and keep in database list of geographical coo
     - OAuth2 Resource Server
     - H2 Database
     - Liquibase
+    - Lombok
 
 ## Installation
 
@@ -42,17 +43,17 @@ Geolocation API is used to collect and keep in database list of geographical coo
    resources:\
    '/geolocations' : request method: POST, data type: JSON, authorization header with bearer token required
 
-```
+```java
 Data format:
-deviceId: long,
-longitute: double (values between -90 and 90),
-latitude: double (values between -180 and 180),
-created: LocalDateTime (OPTIONAL)
+        deviceId:long,
+        longitute:double(values between-90and 90),
+        latitude:double(values between-180and 180),
+        created:LocalDateTime(OPTIONAL)
  ```
 
 e.g.
 
-```
+```JSON
     {
         "deviceId": 8,
         "latitude": -90,
@@ -63,15 +64,50 @@ e.g.
 
 Newly created object will be returned as response.
 
-## Additional informations
+3. Viewing geolocation data.\
+   resources:\
+   '/geolocations' : request method: GET, authorization header with bearer token required.\
 
-Application has 2 controllers: AuthController - used for authentication, and GeolocationController used for adding new geolocations data.
-GeolocationController has addGeolocation method and requires valid GeolocationRequestDto parameter. GeolocationService handles mapping Dto object from body request to entity and persist new Geolocation in GeolocationRepository.
+Input parameters:
 
-Application is using Liquibase library for managing database changes. This makes easy to migrate from in-memory H2 database to any external database with simple configuration.
+ ```java
+   sortDirection:ASC/DESC(OPTIONAL)
+        page:int(OPTIONAL)
+```
 
-Application for demonstration purposes is using InMemoryUserDetailsManager to authenticate user at '/login' endpoint. After successful authentication user gets bearer token in response header. Token is valid for 1 hour and is required for adding new geolocation data.
-JWT is created with OAuth2 Resource Server library and self-signed RSA keys signed with OpenSSL (src/main/resources/certs/).
+request example:
+
+```http
+GET http://localhost:8080/geolocations?sortDirection=DESC&page=2
+```
+
+response (JSON):
+
+```JSON
+[
+  {
+    "id": 900,
+    "deviceId": 19,
+    "latitude": 42.905236256,
+    "longitude": 131.216967882,
+    "created": "2022-12-17T08:14:09"
+  },
+  {
+    "id": 899,
+    "deviceId": 7,
+    "latitude": -19.017922256,
+    "longitude": -91.825569819,
+    "created": "2022-11-06T07:56:18"
+  }
+]
+  ```
+
+## Additional information
+
+Application for demonstration purposes is using InMemoryUserDetailsManager to authenticate user at '/login' endpoint.
+After successful authentication user gets bearer token in response header. Token is valid for 1 hour and is required for
+handling geolocation data.
+JWT is created with OAuth2 Resource Server library and self-signed with OpenSSL RSA keys (src/main/resources/certs/).
 
 //Łukasz Rogowski 2022
 

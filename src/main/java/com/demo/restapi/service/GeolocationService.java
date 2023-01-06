@@ -48,9 +48,8 @@ public class GeolocationService {
 
     }
 
-    public List<GeolocationResponse> getGeolocations(int page, Direction sort) {
+    public List<GeolocationResponse> getGeolocations(int page, Direction sortDirection) {
         int pageNumber = Math.max(page, 0);
-        Direction sortDirection = sort != null ? sort : Direction.ASC;
         List<Geolocation> geolocations = geolocationRepository.findAllGeolocations(PageRequest.of(pageNumber, 50, Sort.by(sortDirection, "id")));
 
         return mapToGeolocationResponses(geolocations);
