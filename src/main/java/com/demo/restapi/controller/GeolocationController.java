@@ -4,6 +4,7 @@ import com.demo.restapi.controller.dto.GeolocationRequest;
 import com.demo.restapi.controller.dto.GeolocationResponse;
 import com.demo.restapi.model.Geolocation;
 import com.demo.restapi.service.GeolocationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,13 +12,11 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class GeolocationController {
 
     private final GeolocationService geolocationService;
 
-    public GeolocationController(GeolocationService geolocationService) {
-        this.geolocationService = geolocationService;
-    }
 
     @GetMapping("/geolocations")
     public List<GeolocationResponse> getGeolocations(@RequestParam(defaultValue = "0") int page, Sort.Direction sort) {

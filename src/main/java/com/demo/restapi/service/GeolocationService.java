@@ -4,6 +4,7 @@ import com.demo.restapi.controller.dto.GeolocationRequest;
 import com.demo.restapi.controller.dto.GeolocationResponse;
 import com.demo.restapi.model.Geolocation;
 import com.demo.restapi.repository.GeolocationRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -14,13 +15,10 @@ import java.util.stream.Collectors;
 import static org.springframework.data.domain.Sort.Direction;
 
 @Service
+@RequiredArgsConstructor
 public class GeolocationService {
 
     private final GeolocationRepository geolocationRepository;
-
-    public GeolocationService(GeolocationRepository geolocationRepository) {
-        this.geolocationRepository = geolocationRepository;
-    }
 
     public Geolocation addGeolocation(GeolocationRequest geolocation) {
         Geolocation newGeolocation = new Geolocation();
@@ -51,7 +49,7 @@ public class GeolocationService {
     }
 
     public List<GeolocationResponse> getGeolocations(int page, Direction sort) {
-        int pageNumber = page >= 0 ? page : 0;
+        int pageNumber = Math.max(page, 0);
         Direction sortDirection = sort != null ? sort : Direction.ASC;
         List<Geolocation> geolocations = geolocationRepository.findAllGeolocations(PageRequest.of(pageNumber, 50, Sort.by(sortDirection, "id")));
 
