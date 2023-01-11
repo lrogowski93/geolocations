@@ -12,4 +12,6 @@ import java.util.List;
 public interface GeolocationRepository extends JpaRepository<Geolocation, Long> {
     @Query("Select g From Geolocation g")
     List<Geolocation> findAllGeolocations(Pageable page);
+
+    List<Geolocation> findByDeviceId(long deviceId);
 }

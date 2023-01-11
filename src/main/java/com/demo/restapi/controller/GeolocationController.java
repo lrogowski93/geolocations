@@ -2,7 +2,6 @@ package com.demo.restapi.controller;
 
 import com.demo.restapi.controller.dto.GeolocationRequest;
 import com.demo.restapi.controller.dto.GeolocationResponse;
-import com.demo.restapi.model.Geolocation;
 import com.demo.restapi.service.GeolocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort.Direction;
@@ -25,9 +24,20 @@ public class GeolocationController {
         return geolocationService.getGeolocations(page, sortDirection);
     }
 
+    @GetMapping("/geolocation/{id}")
+    public GeolocationResponse getGeolocation(@PathVariable long id) {
+        return geolocationService.getGeolocation(id);
+    }
+
+    @GetMapping("/geolocations/device/{deviceId}")
+    public List<GeolocationResponse> getGeolocationsWithDeviceId(@PathVariable long deviceId) {
+        return geolocationService.getGeolocationsWithDeviceId(deviceId);
+    }
+
+
     @PostMapping("/geolocations")
-    public Geolocation addGeolocation(@RequestBody @Valid GeolocationRequest geolocation) {
-        return geolocationService.addGeolocation(geolocation);
+    public GeolocationResponse addGeolocation(@RequestBody @Valid GeolocationRequest geolocationRequest) {
+        return geolocationService.addGeolocation(geolocationRequest);
     }
 
 

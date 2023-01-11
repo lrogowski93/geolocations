@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,13 +33,12 @@ class GeolocationServiceTest {
     void shouldAddGeolocation() {
         //given
         Geolocation expectedGeolocation = new Geolocation();
+        expectedGeolocation.setId(123L);
         when(geolocationRepository.save(any(Geolocation.class))).thenReturn(expectedGeolocation);
         //when
-        Geolocation newGeolocation = geolocationService.addGeolocation(new GeolocationRequest());
+        GeolocationResponse newGeolocation = geolocationService.addGeolocation(new GeolocationRequest());
         //then
-        assertThat(newGeolocation).isEqualTo(expectedGeolocation);
-
-
+        assertThat(newGeolocation.getId()).isEqualTo(expectedGeolocation.getId());
     }
 
     @Test
@@ -53,6 +53,33 @@ class GeolocationServiceTest {
         List<GeolocationResponse> expectedGeolocationResponse = geolocationService.getGeolocations(1, Sort.Direction.ASC);
         //then
         assertThat(expectedGeolocationResponse.get(0).getId()).isEqualTo(geolocations.get(0).getId());
+    }
+
+    @Test
+    void shouldGetGeolocation() {
+        //given
+        Geolocation geolocation = new Geolocation();
+        geolocation.setId(123L);
+        when(geolocationRepository.findById(any(long.class))).thenReturn(Optional.of(geolocation));
+        //when
+        GeolocationResponse expectedGeolocationResponse = geolocationService.getGeolocation(1L);
+        //then
+        assertThat(expectedGeolocationResponse.getId()).isEqualTo(geolocation.getId());
+    }
+
+    @Test
+    void shouldGetGeolocationsWithDeviceId() {
+        //given
+        Geolocation geolocation = new Geolocation();
+        geolocation.setId(1123L);
+        geolocation.setDeviceId(1L);
+        List<Geolocation> geolocations = new ArrayList<>();
+        geolocations.add(geolocation);
+        when(geolocationRepository.findByDeviceId(any(long.class))).thenReturn(geolocations);
+        //when
+        List<GeolocationResponse> expectedGeolocationResponses = geolocationService.getGeolocationsWithDeviceId(1L);
+        //then
+        assertThat(expectedGeolocationResponses.get(0).getId()).isEqualTo(geolocations.get(0).getId());
     }
 
 }

@@ -10,8 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static com.demo.restapi.controller.GeolocationDtoMapper.*;
 import static org.springframework.data.domain.Sort.Direction;
 
 @Service
@@ -20,38 +20,30 @@ public class GeolocationService {
 
     private final GeolocationRepository geolocationRepository;
 
-    public Geolocation addGeolocation(GeolocationRequest geolocation) {
-        Geolocation newGeolocation = new Geolocation();
-        newGeolocation.setDeviceId(geolocation.getDeviceId());
-        newGeolocation.setLatitude(geolocation.getLatitude());
-        newGeolocation.setLongitude(geolocation.getLongitude());
-        newGeolocation.setCreated(geolocation.getCreated());
+    public GeolocationResponse addGeolocation(GeolocationRequest geolocationRequest) {
 
-        return geolocationRepository.save(newGeolocation);
+        Geolocation newGeolocation = geolocationRepository.save(
+                mapToGeolocation(geolocationRequest)
+        );
+
+        return mapToGeolocationResponse(newGeolocation);
     }
 
-    private GeolocationResponse mapToGeolocationResponse(Geolocation geolocation) {
-        return GeolocationResponse.builder()
-                .id(geolocation.getId())
-                .deviceId(geolocation.getDeviceId())
-                .latitude(geolocation.getLatitude())
-                .longitude(geolocation.getLongitude())
-                .created(geolocation.getCreated())
-                .build();
-
-    }
-
-    private List<GeolocationResponse> mapToGeolocationResponses(List<Geolocation> geolocations) {
-        return geolocations.stream()
-                .map(geolocation -> mapToGeolocationResponse(geolocation))
-                .collect(Collectors.toList());
-
-    }
 
     public List<GeolocationResponse> getGeolocations(int page, Direction sortDirection) {
         int pageNumber = Math.max(page, 0);
         List<Geolocation> geolocations = geolocationRepository.findAllGeolocations(PageRequest.of(pageNumber, 50, Sort.by(sortDirection, "id")));
+        return mapToGeolocationResponses(geolocations);
+    }
 
+    public GeolocationResponse getGeolocation(long id) {
+        Geolocation geolocation = geolocationRepository.findById(id).orElseThrow(() -> new RuntimeException("Geolocation with id:" + id + " not found"));
+
+        return mapToGeolocationResponse(geolocation);
+    }
+
+    public List<GeolocationResponse> getGeolocationsWithDeviceId(long deviceId) {
+        List<Geolocation> geolocations = geolocationRepository.findByDeviceId(deviceId);
         return mapToGeolocationResponses(geolocations);
     }
 }
